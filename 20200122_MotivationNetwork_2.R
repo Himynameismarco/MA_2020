@@ -1,6 +1,3 @@
-getwd()
-setwd("C:/Users/marco/OneDrive/Strategic_Life_Planning_19/Uni/BWL-Master/WS1920/Masterarbeit/Data-Tutorials/Test")
-
 install.packages("qgraph") # version 1.6.4
 install.packages("biclust")
 install.packages("IsingFit")
@@ -12,8 +9,8 @@ install.packages("ggplot2")
 #install.packages("tidyverse")
 #install.packages("caret")
 #install.packages("car")
-install.packages("ltm") # f�r Mair et al. (2015) Code
-install.packages("homals") # f�r Mair et al. (2015) Code
+install.packages("ltm") # für Mair et al. (2015) Code
+install.packages("homals") # für Mair et al. (2015) Code
 install.packages("lattice")
 install.packages("simex")
 install.packages("memisc")
@@ -64,7 +61,7 @@ dim(d)
 # noch 1087 Personen
 
 ###
-###   Daten zur Motivation und Partizipation vorbereiten und checken der fehlenden Values
+###   Daten zur Motivation und Partizipation vorbereiten und Kontrolle fehlender Werte
 ###
 
 # motpartdatcompleteraw1 <- datcompleteraw[1:4]
@@ -78,7 +75,7 @@ dim(motpartdatwithoutfullmissings2)
 motpartdatwithoutfullmissings3 <- cbind(motdatcompleteraw2, partdatcompleteraw4)
 
 motpartdatwithoutfullmissings <- motpartdatwithoutfullmissings1[which(colSums(apply(motpartdatwithoutfullmissings1, 1, is.na)) != 39),]
-dim(motpartdatwithoutfullmissings) # jetzt bleiben noch 906 Personen, die nicht Nichts ausgef�llt haben in Mot und/oder Partizipation
+dim(motpartdatwithoutfullmissings) # jetzt bleiben noch 906 Personen, die nicht Nichts ausgefüllt haben in Mot und/oder Partizipation
 
 omittedall <- na.omit(motpartdatwithoutfullmissings)
 dim(omittedall) #720 Personen
@@ -113,6 +110,8 @@ dim(omittedmotv_210_v_211) #720 Personen - Motivation & Mailing Lists & R Confer
 ###
 ###  Code aus Mair et al. (2015) mit einigen Notizen von mir, 
 ###  um herauszufinden, woher die Differenz zu den 720 Individuen kommt.
+###  (Siehe Fußnote in Subsection 4.1.2)
+###  Kann übersprungen werden bis Zeile 437 (--> Network Analysis)
 ###
 
 ###
@@ -203,12 +202,12 @@ alpha_reinholt <- 0.05/dim(mintrinsic)[2]                    ## alpha correction
 ?paste
 ## ------------------------------ Compute IRT Person Parameters -------------------------- 
 ## some convenience functions for computing the person parameters
-# f�r unsere Daten M (Motivation) werden die Reihen immer durch ein " " getrennt. 
+# für unsere Daten M (Motivation) werden die Reihen immer durch ein " " getrennt. 
 tagify <- function(M) apply(M, 1, paste, collapse = " ") 
 ##?factor.scores # --> Was ist der einzelnen Person Wert der latenten Variable? 
 ## fs: Gibt mir eine Liste mit den "score.dat" --> ein data.frame mit bspw. factor scores und Standardabweichungen
 ## 
-## method = "EB" - Au�erdem verwenden sie f�r die Factor Scores Empirical Bayes
+## method = "EB" - Außerdem verwenden sie für die Factor Scores Empirical Bayes
 #?ltm
 ## ltm(data ~ z1) - Eine latente Variable beschreibt mir die factor scores in den Daten
 #?match
@@ -222,7 +221,7 @@ fscore <- function(data) {
   )
 }
 ## Hier werden jetzt die fscores ausgerechnet, aber es sind noch NA Values mit drin. 
-## Wieso ist das m�glich? 
+## Wieso ist das möglich? 
 ## Weil die ltm function unter MAR durch na.action = NULL die observed data miteinbezieht. 
 ## compute person parameters and associated standard errors
 pp <- list(
@@ -240,10 +239,10 @@ for(i in names(pp)) {
   RMotivation[pp[[i]]$names, i] <- pp[[i]]$scores
   RMotivation[pp[[i]]$names, paste0(i, ".se")] <- pp[[i]]$serrs
 }
-# vorherige Zeilen nehmen wir f�r jede latent Variable im pp Element (fr�her e.g.: wtask; jetzt: mextrinsic, mhybrid und mintrinsic) 
+# vorherige Zeilen nehmen wir für jede latent Variable im pp Element (früher e.g.: wtask; jetzt: mextrinsic, mhybrid und mintrinsic) 
 # die scores Spalte aus dem pp (person parameter) Element die laufende Nummer dieser Variable 
 # und die Spalte (also das "i" --> # die latente Variable) 
-# und f�gt dort die scores und serrs (standarderrors) ein 
+# und fügt dort die scores und serrs (standarderrors) ein 
 # RMotivation
 ## socio-demographic variables
 RMotivation$gender    <- factor(d$v_216, levels = 1:2, labels = c("male", "female"))   ## gender
@@ -252,7 +251,7 @@ RMotivation$statseduc <- factor(d$v_222, levels = 0:1, labels = c("no", "yes")) 
 RMotivation$fulltime  <- factor(d$v_231, levels = 0:1, labels = c("no", "yes"))        ## working full-time
 RMotivation$academia  <- factor(d$v_237, levels = 0:1, labels = c("no", "yes"))        ## working in academia
 RMotivation$statswork <- factor(d$v_245, levels = 0:1, labels = c("no", "yes"))        ## working in the statistical area
-#RMotivation # jetzt haben wir das halt auch noch alles in meiner �bersicht. 
+#RMotivation # jetzt haben wir das halt auch noch alles in meiner Übersicht. 
 
 ## save(RMotivation, file = "RMotivation.rda")
 
@@ -405,7 +404,7 @@ plot(fitnpkgsNB)
 vif(fitnpkgsNB)
 
 ###
-###     Extrahieren der einzelnen ltm-models f�r die latenten Variablen mextrinsic, mhybrid, mintrinsic 
+###     Extrahieren der einzelnen ltm-models für die latenten Variablen mextrinsic, mhybrid, mintrinsic 
 ###
 
 tagify <- function(M) apply(M, 1, paste, collapse = " ") 
@@ -441,21 +440,13 @@ View(pp_MZ)
 ### Erstellen des Netzwerks
 ###
 
-#eimAndParticipation_clean <- na.omit(motpartdatwithoutfullmissings)
-#eimAndParticipation_clean # all eim items and participation items without individuals with any NAs
-#dim(eimAndParticipation_clean) # 720 individuals are left
-#View(eimAndParticipation_clean)
-## Testing Binarization of Participation Variable, but it does not make a difference to the network
-#bipartdatcompleteraw3 <- binarize(d["v_192"], threshold = 2.669) #Participationitem1 - Number of Packages - Binarized at Median
-
-
-omittedall <- na.omit(motpartdatwithoutfullmissings)
-dim(omittedall) #720 Personen - All Motivation items, and all three participation items
+omittedall <- na.omit(motpartdatwithoutfullmissings) # Datenbasis ohne Zeilen mit NA values
+dim(omittedall) # 720 Personen - All Motivation items, and all three participation items
 omittedall
 
-coromittedall <-cor(omittedall)
+coromittedall <-cor(omittedall) # Pearson Correlations meiner Daten
 
-coromittedalltable <- as.data.frame(as.table(coromittedall))
+coromittedalltable <- as.data.frame(as.table(coromittedall)) # 
 View(coromittedalltable)
 
 # Korrelationstabelle komplett: 
@@ -463,19 +454,19 @@ coromittedall_clean <- coromittedalltable[which(coromittedalltable[,3] < 1, TRUE
 View(coromittedall_clean)
 arrangedomittedall_clean = arrange(coromittedall_clean, -Freq)
 
-# Nur noch jede zweite Zeile
+# Nur noch jede zweite Zeile --> Weil Korrelationen immer doppelt: z.B.: eim_30 mit eim_33 und eim_33 mit eim_30
 toDelete <- seq(2, nrow(arrangedomittedall_clean), 2)
 
 arrangedomittedall_clean_2 <- arrangedomittedall_clean[-toDelete,]
 View(arrangedomittedall_clean_2)
-export <- arrangedomittedall_clean_2
+export <- arrangedomittedall_clean_2 # Exportieren der Datei für den Appendix
 write.table(export, "20200124_PearsonCorrelations.txt", row.names=FALSE)
 write.csv2(export, "20200124_PearsonCorrelations.csv")
 
 
-##
-## Mergen der nodes mit Korrelationen �ber .5
-##
+###
+### Mergen der nodes mit Korrelationen über .5
+###
 
 omittedall <- na.omit(motpartdatwithoutfullmissings)
 dim(omittedall) # Sicherheitscheck
@@ -488,7 +479,7 @@ m15_16 <- rowMeans(eim15_16)
 m36_34 <- rowMeans(eim36_34)
 m30_33 <- rowMeans(eim30_33)
 
-
+# Löschen der Knotenpunkte, die durch einen merged Node im Netzwerk repräsentiert werden. 
 omittedall$eim_21 <- NULL #1
 omittedall$eim_18 <- NULL #2
 omittedall$eim_15 <- NULL #3
@@ -499,7 +490,7 @@ omittedall$eim_30 <- NULL #7
 omittedall$eim_33 <- NULL #8
 
 View(omittedall)
-omittedmerged <- cbind(omittedall, m21_18, m15_16, m36_34, m30_33)
+omittedmerged <- cbind(omittedall, m21_18, m15_16, m36_34, m30_33) # Merged Nodes wieder in Daten einbinden
 dim(omittedmerged)
 
 ###
@@ -508,11 +499,12 @@ dim(omittedmerged)
 
 coromittedmerged <- cor(omittedmerged)
 coromittedmerged_table <- as.data.frame(as.table(coromittedmerged))
-View(coromittedmerged_table) # Keine correlationen �ber .5 
+View(coromittedmerged_table) # Passt. Keine Korrelationen über .5 
 sd(coromittedmerged_table$Freq)
 summary(coromittedmerged_table$Freq)
+
 ###
-### --> coromittedmerged als finale Korrelationsmatrix f�r die Konstruktion meines Netzwerks
+### --> coromittedmerged als finale Korrelationsmatrix für die Konstruktion meines Netzwerks
 ###
 
 qgraph(coromittedmerged, 
@@ -527,7 +519,7 @@ qgraph(coromittedmerged,
        sampleSize = 720,
        graph = "glasso") # graph nutzt Glasso zur Bestimmung der edges
 
-# Als PDF speichern f�r bessere Aufl�sung
+# Als PDF speichern für bessere Auflösung
 qgraph(coromittedmerged, 
        layout = "spring", 
        graph = "pcor", 
@@ -554,15 +546,16 @@ GlassoGraph <- qgraph(coromittedmerged,
                       graph = "glasso")
 
 ###
-### Meine Partial Correlations Matrix verwendet im Netzwerk
+### Nun filtere ich aus der Qgraph Datei meine Partial Correlations Matrix heraus
 ###
-Pcormatrix
-Pcormatrix <- as.data.frame(PcorGraph$Edgelist) # Problem: Variablen nicht bzw. durchlaufend benannt. 
-PcorVarNames <- PcorGraph$graphAttributes$Nodes$names # Hier stecken aber meine Variablen Namen.
-Needed <- cbind(c(1:35), PcorVarNames) # Einf�gen einer Spalte, die die Mergen anhand der Spaltennummer erm�glicht. 
-merge1 <- merge(Needed, Pcormatrix, by.x = "V1", by.y = "from")
-pcor_usable <- merge(Needed, merge1, by.x = "V1", by.y = "to")
 
+Pcormatrix <- as.data.frame(PcorGraph$Edgelist) # Problem: Variablen nicht wie urpsrünglich eim_12 etc., sondern durchlaufend benannt, wobei 1 nicht eim_01 ist. 
+PcorVarNames <- PcorGraph$graphAttributes$Nodes$names # Hier finde ich aber meine Variablen Namen zu den jeweiligen Zeilen.
+Needed <- cbind(c(1:35), PcorVarNames) # Einfügen einer Spalte, die das Mergen anhand der Spaltennummer ermöglicht. 
+merge1 <- merge(Needed, Pcormatrix, by.x = "V1", by.y = "from")
+pcor_usable <- merge(Needed, merge1, by.x = "V1", by.y = "to") # Jetzt habe ich die Variablennamen und die Partial Correlations jeweils passend zusammen und nicht mehr nichtssagende durchlaufende Nummern
+
+# Löschen der Spalten mit den durchlaufenden Nummern, weil nun ja die richtige Bezeichnung in meiner pcor_usable Matrix ist
 pcor_usable$V1 <- NULL
 pcor_usable$V1.y <- NULL
 pcor_usable$directed <- NULL
@@ -570,37 +563,38 @@ pcor_usable$bidirectional <- NULL
 pcor_usable
 orderedpcor_usable <- pcor_usable[order(-pcor_usable$weight), ] # Sortieren nach Weight
 View(orderedpcor_usable)
-write.csv2(orderedpcor_usable, "20200130_PartialCorrelations.csv")
+write.csv2(orderedpcor_usable, "20200130_PartialCorrelations.csv") # Exportieren meiner Partial Correlations 
 
 Pcor_table <- as.data.frame(as.table(Pcormatrix$weight))
 View(Pcor_table)
-sd(Pcor_table$Freq)
+sd(Pcor_table$Freq) # Standardabweichung
 summary(Pcor_table$Freq)
 
 ###
-### Centrality Ma�e im Netzwerk
+### Centrality Maße im Netzwerk
 ###
 
 dim(omittedmerged)
 centralityPlot(GlassoGraph, include = "All")
 centralityPlot(GlassoGraph, include = "ExpectedInfluence")
 EI_Plot <- centralityPlot(GlassoGraph, include = "ExpectedInfluence")
-View(EI_Plot$data) # EI - Werte
+View(EI_Plot$data) # Expected Influence - Werte
 View(centralityTable(GlassoGraph))
 View(centralityTable(PcorGraph))
 
 ###
-### Durchschnitt der Centrality Werte der einzelnen Formen von Motivation
+### Ermitteln des Durchschnitts der Centrality Werte der einzelnen Formen von Motivation
 ###
 
-EI_name_value <- data.frame(data=EI_Plot$data$node, EI_Plot$data$value)
+EI_name_value <- data.frame(data=EI_Plot$data$node, EI_Plot$data$value) # Dataframe erstellen mit Knotenpunkten und den jeweiligen EI-Werten dazu
 EI_name_value
-EM_EI <- EI_name_value[c(1:12), ]
+EM_EI <- EI_name_value[c(1:12), ] # Nur EM Werte
 EM_EI
-wEM_mIM_EI <- rbind(EI_name_value[c(13:26), ], EI_name_value[c(29:30), ])
+wEM_mIM_EI <- rbind(EI_name_value[c(13:26), ], EI_name_value[c(29:30), ]) # Nur wEM-mIM Werte
 wEM_mIM_EI
-IM_EI <- rbind(EI_name_value[c(27:28), ], EI_name_value[c(31:32), ])
+IM_EI <- rbind(EI_name_value[c(27:28), ], EI_name_value[c(31:32), ]) # Nur IM Werte
 IM_EI
+# Jeweils den Durschnitt berechnen:
 sum(EM_EI$EI_Plot.data.value)
 avsumEM <- sum(EM_EI$EI_Plot.data.value)/nrow(EM_EI)
 avsumEM
@@ -619,10 +613,10 @@ summary(EI_name_value$EI_Plot.data.value)
 sd(EI_name_value$EI_Plot.data.value)
 EI_name_value$EI_Plot.data.value
 
-#sd(matrix(1:2, nrow = 5000000, ncol = 1)) # Kontrolle, ob die sd function passt
+#sd(matrix(1:2, nrow = 5000000, ncol = 1)) # Kontrolle, ob die sd function auch echt funktioniert
 
 ###
-### Test, ob eine Edge zwischen 24 und 210 erscheint, wenn wir 23 und 27 rausnehmen. 
+### Test, ob eine Edge zwischen 24 und 210 im GLASSO Graph erscheint, wenn ich nodes 23 und 27 rausnehmen. 
 ###
 
 omittedmerged_minus2427 <- omittedmerged
@@ -635,13 +629,32 @@ qgraph(coromittedmerged_minus2427,
        layout = "spring", 
        sampleSize = 720,
        graph = "glasso", 
-       filetype = "pdf")
+       filetype = "pdf") # Ja, sie erscheint. 
 
 ###
-### Constructing a network with theoretically merged nodes. 
+### Netzwerkkonstruktion mit nur dem wichtigsten Participation item: Packages
+###
+               
+omittedmerged # Meine Ausgangsbasis
+omittedmerged_onlypack <- omittedmerged
+omittedmerged_onlypack$v_210 <- NULL
+omittedmerged_onlypack$v_211 <- NULL
+dim(omittedmerged_onlypack) # Check
+
+coromittedmerged_onlypack <- cor(omittedmerged_onlypack)
+
+qgraph(coromittedmerged_onlypack, 
+       layout = "spring", 
+       sampleSize = 720,
+       graph = "glasso", 
+       filetype = "pdf") 
+
+###
+### Netzwerkkonstruktion mit Nodes merged auf Basis meiner Results und den theoretischen Überlegungen
 ###
 
-omittedall <- na.omit(motpartdatwithoutfullmissings)
+# Alles analog zu obigem Mergen der Nodes im Netzwerk 
+omittedall <- na.omit(motpartdatwithoutfullmissings) # zuvor in omittedall ja bereits Knotenpunkte rausgelöscht und durch gemergte ersetzt - daher wieder die anfängliche Omittedall Matrix wiederhergestellt
 dim(omittedall) # Sicherheitscheck
 eim_09_11 <- cbind(omittedmerged$eim_09, omittedmerged$eim_11)
 eim_08_04_12 <- cbind(omittedmerged$eim_08, omittedmerged$eim_04, omittedmerged$eim_12)
@@ -674,11 +687,16 @@ omittedmerged2$eim_23 <- NULL #20
 omittedmerged2$eim_24 <- NULL #21
 omittedmerged2$eim_27 <- NULL #22
 
-View(omittedall)
+dim(omittedall)
 omittedmerged_th <- cbind(omittedmerged2, m09_11, m08_04_12, m21_20, m29_31, m32_36, m23_24_27)
 dim(omittedmerged_th)
 
 coromittedmerged_th <- cor(omittedmerged_th)
+
+qgraph(coromittedmerged_th, 
+       layout = "spring", 
+       sampleSize = 720,
+       graph = "glasso")
 
 qgraph(coromittedmerged_th, 
        layout = "spring", 
@@ -693,16 +711,18 @@ qgraph(coromittedmerged_th,
 
 omittedmerged
 summary(omittedmerged$v_192)
-?matrix
 names(omittedmerged)
-?data.frame
-omittedmerged_gr2 <- matrix(data = NA, ncol = 35)
-omittedmerged_max2 <- matrix(data = NA, ncol = 35)
+omittedmerged_gr2 <- matrix(data = NA, ncol = 35) # Erstellen einer leeren Matrix mit der richtigen Anzahl Columns für den späteren For-Loop
+omittedmerged_gr2
+omittedmerged_max2 <- matrix(data = NA, ncol = 35) # Erstellen einer leeren Matrix mit der richtigen Anzahl Columns für den späteren For-Loop
 omittedmerged_gr2 <- as.data.frame(omittedmerged_gr2)
 omittedmerged_max2 <- as.data.frame(omittedmerged_max2)
-colnames(omittedmerged_gr2) <- names(omittedmerged)
-colnames(omittedmerged_max2) <- names(omittedmerged)
-index <- 0
+colnames(omittedmerged_gr2) <- names(omittedmerged) # Richtige Namen hinzufügen
+colnames(omittedmerged_max2) <- names(omittedmerged) # Richtige Namen hinzufügen
+index <- 0 # Meine Count Variable
+
+# Der folgende For-Loop geht mir durch meine Spalte v_192 durch und fügt die Zeilen, 
+# für die v_192 größer als 2 ist / kleiner als 2 ist in die jeweiligen Matrizen ein
 for (i in omittedmerged$v_192) {
   if (i > 2) {
     index <- index + 1
@@ -716,14 +736,16 @@ for (i in omittedmerged$v_192) {
   }
 }
 dim(omittedmerged)
-index # test 
-dim(omittedmerged_gr2)
-dim(omittedmerged_max2)
-omittedmerged_gr2 <- na.omit(omittedmerged_gr2)
-omittedmerged_max2 <- na.omit(omittedmerged_max2)
-dim(omittedmerged_gr2) # Nur 260 Partizipierende mit mehr als 1 Packages
-dim(omittedmerged_max2) # 460 Partizipierende mit 1 (oder weniger Packages)
+index # test, ob durch alle Reihen durchgegangen wurde 
+dim(omittedmerged_gr2) # Hier jeweils zusätzlich eine leere Zeile mit in meiner leeren Matrix
+dim(omittedmerged_max2) # Hier jeweils zusätzlich eine leere Zeile mit in meiner leeren Matrix
+omittedmerged_gr2 <- na.omit(omittedmerged_gr2) # Hier lösche ich diese 
+omittedmerged_max2 <- na.omit(omittedmerged_max2) # Hier lösche ich diese 
+dim(omittedmerged_gr2) # 260 Partizipierende mit mehr als 1 Packages --> Definitiv zu wenig
+dim(omittedmerged_max2) # 460 Partizipierende mit 1 (oder weniger Packages) --> Wohl auch zu grenzwertig
 
+
+# Konstruktion der Netzwerke
 
 coromittedmerged_gr2 <- cor(omittedmerged_gr2)
 coromittedmerged_max2 <- cor(omittedmerged_max2)
@@ -752,57 +774,20 @@ GlassoGraph_max2 <- qgraph(coromittedmerged_max2,
                            sampleSize = 460,
                            graph = "pcor") # Unterschied wird in Pcor Darstellung nicht gut deutlich
 
+GlassoGraph_gr2 <- qgraph(coromittedmerged_gr2, 
+                          layout = "spring", 
+                          sampleSize = 260,
+                          graph = "glasso")
 
-smallworldness(GlassoGraph_gr2)
+GlassoGraph_max2 <- qgraph(coromittedmerged_max2, 
+                           layout = "spring", 
+                           sampleSize = 460,
+                           graph = "glasso")
+
+# Hier sind meine trans_target Werte auf Basis des GLASSO Graphs für die connectivity Analyse
+# Da der Graph auf Basis von partial correlations ein saturated Graph ist, ist es nicht sinnvoll, die Werte aus diesem zu nehmen. 
+smallworldness(GlassoGraph_gr2)  
 smallworldness(GlassoGraph_max2)
-?smallworldness
 
 
 
-
-
-
-###
-### Um das Clustering meines Netzwerks zu messen. 
-###
-
-clusteringPlot(as.igraph(GlassoGraph)) #as.igraph macht qgrah Objekt zu einem igraph Objekt. 
-clustcoef_auto(GlassoGraph)
-
-
-###
-### Test Einfluss der Summe der Reihen als Overall Activation des Netzwerks auf Participation
-###
-
-View(omittedmerged)
-omittedmergedmot <- cbind(omittedmerged[1:28], omittedmerged[32:35])
-rs <- rowSums(omittedmergedmot)
-rs_v192 <- cbind(rs, omittedmerged["v_192"]) #Packages
-rs_v210 <- cbind(rs, omittedmerged["v_210"]) #Mailing Lists
-rs_v211 <- cbind(rs, omittedmerged["v_211"]) #R conferences
-View(rs_v192)
-cor(rs_v192, method = "pearson")
-cor(rs_v210)
-cor(rs_v211)
-View(rs_v192)
-
-lr_v_192 <- lm(omittedmerged$v_192 ~ rs)
-summary(lr_v_192)
-lr_v_210 <- lm(omittedmerged$v_210 ~ rs)
-summary(lr_v_210)
-lr_v_211 <- lm(omittedmerged$v_211 ~ rs)
-summary(lr_v_211)
-
-###
-### Test f�r nur hybrid und intrinsic motivation
-###
-
-mhybrid_intrinsic <- cbind(omittedmerged[, c(paste0("eim_1", 3:4), "eim_19", "eim_17", "eim_20", 
-                                          paste0("eim_2", 2:7), "eim_31", "eim_32", "eim_35", "m21_18", 
-                                          "m15_16", "m36_34", "m30_33")])
-dim(mhybrid_intrinsic)
-rsmhybrid_intrinsic <- rowSums(mhybrid_intrinsic)
-rsmhybrid_intrinsic_v192 <- cbind(rsmhybrid_intrinsic, omittedmerged["v_192"])
-rsmhybrid_intrinsic_v192
-cor(rsmhybrid_intrinsic_v192)
-t.test(rsmhybrid_intrinsic, omittedmerged["v_192"])
