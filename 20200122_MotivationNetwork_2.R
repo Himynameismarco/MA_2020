@@ -464,9 +464,9 @@ write.table(export, "20200124_PearsonCorrelations.txt", row.names=FALSE)
 write.csv2(export, "20200124_PearsonCorrelations.csv")
 
 
-###
-### Mergen der nodes mit Korrelationen über .5
-###
+##
+## Mergen der nodes mit Korrelationen über .5
+##
 
 omittedall <- na.omit(motpartdatwithoutfullmissings)
 dim(omittedall) # Sicherheitscheck
@@ -563,6 +563,9 @@ pcor_usable$bidirectional <- NULL
 pcor_usable
 orderedpcor_usable <- pcor_usable[order(-pcor_usable$weight), ] # Sortieren nach Weight
 View(orderedpcor_usable)
+summary(orderedpcor_usable)
+quantile(orderedpcor_usable$weight, c(.98))
+?quantile
 write.csv2(orderedpcor_usable, "20200130_PartialCorrelations.csv") # Exportieren meiner Partial Correlations 
 
 Pcor_table <- as.data.frame(as.table(Pcormatrix$weight))
